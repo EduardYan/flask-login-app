@@ -1,0 +1,69 @@
+/* These styles are for the login page */
+
+html {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #424040;
+}
+
+.container {
+  width: 50%;
+  margin: 10rem auto;
+  align-items: center;
+}
+
+.container form {
+  text-align: center;
+}
+
+.container form h1 {
+  transition: color 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.container form h1:hover {
+  color: #aaa;
+  cursor: pointer;
+}
+
+.container form p {
+  transition: color 0.3s ease;
+  font-size: 1.3rem;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin-bottom: 1.5rem;
+  color: #aaa;
+}
+
+.container form p:hover {
+  cursor: pointer;
+  color: #888;
+}
+
+.container form input {
+  margin-bottom: 1.5rem;
+  padding: 0.5rem;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.container form button {
+  transition: color 0.3s ease;
+  display: block;
+  border-radius: 0.5rem;
+  padding: 0.7rem;
+  margin: 0 auto;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.container form button:hover {
+  cursor: pointer;
+  background-color: #aaa;
+  box-shadow: 0.3rem 0.3rem rgba(0, 0, 0, 0.3);
+
+}

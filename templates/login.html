@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename = 'css/login.css') }}">
+</head>
+<body>
+  
+  <div class="container">
+    <form action="/login" method="POST">
+      <h1>Login</h1>
+      <p>Login with whatever name <br> for wacth the images</p>
+
+
+      <input type="text" name="name-user" placeholder="Name">
+      <button type="submit">Login</button>
+
+    </form>
+  </div>
+
+</body>
+</html>

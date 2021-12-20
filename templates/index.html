@@ -1,5 +1,21 @@
 {% extends 'layout.html' %}
 
+<!-- THIS IS THE PRINCIPAL PAGE -->
+
 {% block content %}
-<h1>Watch Images App</h1>
+
+<div class="container">
+  <!-- VIEW OF IMAGES -->
+  <div class="images-view">
+    <img src="{{ url_for('static', filename = 'img/cactus.jpg') }}" alt="first-image" width="500">
+    <img src="{{ url_for('static', filename = 'img/red-tree.png') }}" alt="second-image" width="500">
+    <img src="{{ url_for('static', filename = 'img/code1.png') }}" alt="third-image" width="500">
+    <img src="{{ url_for('static', filename = 'img/code-js.png') }}" alt="fourth-image" width="500">
+    <img src="{{ url_for('static', filename = 'img/myImage2.jpg') }}" alt="fifth-image" width="500">
+    <img src="{{ url_for('static', filename = 'img/code2.jpg') }}" alt="sixty-image" width="500">
+
+  </div>
+
+</div>
+
 {% endblock %}

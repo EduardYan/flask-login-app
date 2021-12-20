@@ -1,0 +1,11 @@
+<!-- THIS IS THE PAGE IN CASE THE USER NOT IS LOGED -->
+
+<!-- THE STYLE FOR THE MESSAGE -->
+<link rel="stylesheet" href="{{ url_for('static', filename = 'css/not-log.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename = 'css/main.css') }}">
+
+<div class="container">
+  <h1>You are not logged</h1>
+  <a href="{{ url_for('login') }}">Login</a>
+
+</div>

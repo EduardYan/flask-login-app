@@ -1,0 +1,27 @@
+/*
+  These are the styles
+  for the page in case the user not is logged.
+*/
+
+h1 {
+  transition: color 0.3s ease;
+  color: #aaa;
+}
+
+h1:hover {
+  cursor: pointer;
+  color: #777;
+}
+
+a {
+  text-decoration: none;
+  color: #aaa;
+  border: 2px black solid;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  background-color: #000000;
+}
+
+a:hover {
+  color: #555;
+}

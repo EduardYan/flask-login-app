@@ -1,0 +1,116 @@
+/*
+  These are the styles for in principal
+  page.
+*/
+
+html {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background-color: #424040;
+}
+
+/* Navigation */
+header .nav-main {
+  padding: 0.8rem;
+  background-color: #333;
+  display: grid;
+  grid-template-columns: 80% 20%;
+}
+
+header .nav-main .nav-left, header .nav-main .nav-rigth {
+  list-style: none;
+  padding-left: 0;
+}
+
+header .nav-main .nav-rigth {
+  display: flex;
+}
+
+header .nav-main .nav-rigth li {
+  margin: 2rem 1rem;
+}
+
+header .nav-main .nav-rigth li a {
+  transition: color .3s ease;
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 25px;
+
+}
+
+header .nav-main .nav-rigth li a:hover {
+  color: #aaa;
+  text-shadow: .1rem .1rem rgba(255, 255, 255, 0.2);
+
+}
+
+header .nav-main .nav-left li {
+  margin: 1.5rem 0;
+}
+
+header .nav-main .nav-left li a {
+  transition: color 0.3s ease;
+  color: #ffffff;
+  padding: 2rem;
+  font-size: 2rem;
+  text-decoration: none;
+}
+
+header .nav-main .nav-left li a:hover {
+  cursor: pointer;
+  color: #aaa;
+}
+
+.container {
+  width: 80%;
+  margin: 2rem auto;
+}
+
+/* Images */
+.container .images-view img {
+  transition: box-shadow 0.3s ease;
+  width: 100%;
+  border-radius: 1rem;
+}
+
+.container .images-view img:hover {
+  box-shadow: 0.8rem 0.8rem rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  
+}
+
+/* The image view for show */
+.images-view {
+  display: grid;
+  grid-template-columns: 30% 30% 30%;
+  column-gap: 1rem;
+  row-gap: 3rem;
+}
+
+/* Footer */
+footer {
+  background-color: #333;
+  padding: 0.8rem;
+  text-align: right;
+  color: #ffffff;
+  margin-top: 8.5rem;
+}
+
+footer p {
+  transition: color 0.3s ease;
+  font-size: 1.5rem;
+  text-align: right;
+  margin: 0 2rem;
+}
+
+footer p:hover {
+  cursor: pointer;
+  color: #bbb;
+}

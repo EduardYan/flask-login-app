@@ -39,6 +39,7 @@ body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   margin-bottom: 1.5rem;
   color: #aaa;
+  text-align: center;
 }
 
 .container form p:hover {
@@ -52,6 +53,11 @@ body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
+.container form hr {
+  width: 60%;
+  margin-bottom: 1rem;
+}
+
 .container form button {
   transition: color 0.3s ease;
   display: block;
@@ -59,6 +65,7 @@ body {
   padding: 0.7rem;
   margin: 0 auto;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  width: 40%;
 }
 
 .container form button:hover {

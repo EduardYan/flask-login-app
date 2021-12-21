@@ -10,12 +10,16 @@
 <body>
   
   <div class="container">
+    <!-- LOGIN FORM -->
     <form action="/login" method="POST">
       <h1>Login</h1>
-      <p>Login with whatever name <br> for wacth the images</p>
 
+      <p>Login with a name and password <br> for wacth the images</p>
 
-      <input type="text" name="name-user" placeholder="Name">
+      <hr>
+
+      <input type="text" name="name-user" placeholder="Name" autofocus>
+      <input type="password" name="password-user" placeholder="Password" >
       <button type="submit">Login</button>
 
     </form>

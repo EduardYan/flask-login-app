@@ -3,9 +3,12 @@ This is the principal file for execute
 the server.
 """
 
+from sys import base_exec_prefix
+import bcrypt
 from flask import Flask, render_template, request, redirect, url_for
 from models.user import User
 from models.database import DataBase, DB_PATH
+from bcrypt import checkpw, gensalt, hashpw
 
 # variable for the visits
 visits = 0
@@ -56,6 +59,9 @@ def save_user():
 
   # gettings the info of the user for save in the database
   name = request.form['name-user']
+  password = request.form['password-user']
+  salt = gensalt()
+  password_hashed = hashpw(password.encode(), salt) # getting the password in hash
 
   db = DataBase(DB_PATH) # connectiong
 
@@ -65,13 +71,20 @@ def save_user():
 
   # validating if the name is in the list of the database
   if name in names_list:
-    return redirect(f'/home/{name}')
+    password_hashed = db.select(f'SELECT password FROM users WHERE(name = "{name}")')[0][0]
+    print(password)
+    print(password_hashed)
+
+    if checkpw(password.encode(), password_hashed.encode()):
+      return redirect(f'/home/{name}')
+    else:
+      return render_template('pass-incorrect.html')
 
   else:
     # creating a user
-    user = User(name)
+    user = User(name, password_hashed)
     # in case not in the database
-    db.insert( f'INSERT INTO users VALUES(NULL, "{user.name}")' )
+    db.insert( f'INSERT INTO users VALUES(NULL, "{user.name}", "{user.password.content}")' )
     db.close()
 
     return redirect(f'/home/{user.name}') # rediricting with the route in the name of the user

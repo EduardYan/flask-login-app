@@ -8,16 +8,28 @@
   <link rel="stylesheet" href="{{ url_for('static', filename = 'css/login.css') }}">
 </head>
 <body>
+
+
+  <!-- SHOWING MESSAGES IF EXISTS -->
+  {% with messages = get_flashed_messages()[0] %}
+  {% if messages %}
+  <div class="messages-view">
+    <p class="message">{{ messages }}</p>
+  </div>
+  <script src="{{ url_for('static', filename = 'js/deleteMessage.js') }}"></script>
+  {% endif %}
+  {% endwith %}
   
   <div class="container">
     <!-- LOGIN FORM -->
-    <form action="/login" method="POST">
+    <form action="/login" method="POST" class="form-login">
       <h1>Login</h1>
 
-      <p>Login with a name and password <br> for wacth the images</p>
+      <p class="message">Login with a name and password <br> for wacth the images</p>
 
       <hr>
 
+      <!-- INPUTS FOR DATA -->
       <input type="text" name="name-user" placeholder="Name" autofocus>
       <input type="password" name="password-user" placeholder="Password" >
       <button type="submit">Login</button>

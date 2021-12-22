@@ -12,7 +12,7 @@ class Password:
     if type(content) not in [bytes]:
       raise TypeError('The parameter password, must be a string.')
 
-    self.content = content
+    self.content = content.decode()
     self.len = len(content)
 
   def __str__(self) -> str:

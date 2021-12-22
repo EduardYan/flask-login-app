@@ -63,7 +63,7 @@ def save_user():
   salt = gensalt()
   password_hashed = hashpw(password.encode(), salt) # getting the password in hash
 
-  db = DataBase(DB_PATH) # connectiong
+  db = DataBase(DB_PATH) # connecting
 
   # getting the users and names for validat
   users_list = db.select('SELECT * FROM users')
@@ -72,8 +72,6 @@ def save_user():
   # validating if the name is in the list of the database
   if name in names_list:
     password_hashed = db.select(f'SELECT password FROM users WHERE(name = "{name}")')[0][0]
-    print(password)
-    print(password_hashed)
 
     if checkpw(password.encode(), password_hashed.encode()):
       return redirect(f'/home/{name}')

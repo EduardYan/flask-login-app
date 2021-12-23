@@ -54,7 +54,7 @@ def home(name):
   user = Users.query.filter_by(name = name).first()
 
   # validating if the name passed in the url is in the database
-  if name in names_list:
+  if user.name in names_list:
     return render_template('index.html', user = user)
 
   else:
@@ -86,20 +86,24 @@ def save_user():
   users_list = Users.query.all()
   names_list = [user.name for user in users_list]
 
+
   # validating if the name is in the list of the database
   if name in names_list:
     user = Users.query.filter_by(name = name).first()
+    print(user.id)
+    print(user.name)
+    print(user.password)
 
     # creating a password object
-    passwordObject = Password(password_hashed)
+    passwordObject = Password(user.password.encode())
 
-    if checkpw(passwordObject.content.encode(), user.password): # validating the password
+    if checkpw(password_hashed, passwordObject.content.encode()): # validating the password
       print('good')
-      return redirect(f'/home/{name}')
+      return redirect(f'/home/{user.name}')
     else:
       print('bad')
       flash(MESSAGES_ERRORS['password-incorrect'].format(name = user.name))
-      return redirect(url_for('save_user'))
+      return redirect(url_for('login'))
 
   else:
     # creating a user
@@ -147,7 +151,6 @@ def my_acount(name):
   # selecting the id and the name
   user = Users.query.filter_by(name = name).first()
 
-  # user = User(user[0], user[1])
   return render_template('count.html', user = user)
 
 @app.route('/change-password/<string:id>', methods = ['GET'])
@@ -184,7 +187,7 @@ def validate_password(id):
 
   user = Users.query.filter_by(id = int(id)).first()
 
-  passwordObject = Password(user.password.encode())
+  passwordObject = Password(user.password)
 
   if checkpw(password_to_validate, passwordObject.content.encode()):
     return redirect(f'/change-password/{user.id}')
@@ -216,9 +219,7 @@ def validate_password_for_name(id):
 
   user = Users.query.filter_by(id = int(id)).first()
 
-  print(user.password)
-  print(type(user.password))
-  passwordObject = Password(user.password.encode())
+  passwordObject = Password(user.password)
 
   if checkpw(password_to_validate, passwordObject.content.encode()):
     return redirect(f'/change-name/{user.id}')

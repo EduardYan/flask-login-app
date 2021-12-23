@@ -42,7 +42,6 @@ def home(name):
 
   # validating if the name passed in the url is in the database
   if name in names_list:
-    print(user)
     return render_template('index.html', user = user)
 
   else:

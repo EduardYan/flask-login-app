@@ -14,8 +14,8 @@
   <span>Name: {{ user[1] }}</span>
   <span>Password: The password is encrypted.</span>
 
-  <a href="/validate-password-for-name/{{ user[0] }}">Change Name</a>
-  <a href="/validate-password/{{ user[0] }}">Change Password</a>
+  <a href="/validate-password-for-name/{{ user.id }}">Change Name</a>
+  <a href="/validate-password/{{ user.id }}">Change Password</a>
 
 </div>
 {% endblock %}

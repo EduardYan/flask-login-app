@@ -8,11 +8,11 @@
 
 <div class="container">
   <!-- FORM FOR THE DATA -->
-  <form action="/change-name/{{ user[0] }}" method="POST">
+  <form action="/change-name/{{ user.id }}" method="POST">
     <h1>Put the new name</h1>
 
     <label for="old-name">Old Name</label>
-    <input type="text" id="old-name" readonly value="{{ user[1] }}">
+    <input type="text" id="old-name" readonly value="{{ user.name }}">
 
     <label for="new-name">New Name</label>
     <input type="text" id="new-name" name="new-name" placeholder="New name" autofocus>

@@ -4,21 +4,36 @@ the server.
 """
 
 from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import update
+from bcrypt import checkpw, gensalt, hashpw
 from models.user import User
 from models.password import Password
-from models.database import DataBase, DB_PATH
 from data.messages import MESSAGES_ERRORS
-from data.queries import GET_FOR_ID, GET_FOR_NAME, INSERT_NEW_USER
-from bcrypt import checkpw, gensalt, hashpw
 
 # variable for the visits
 visits = 0
 
 # creating the server
 app = Flask(__name__)
-
-# setting for the server
+# settings for the server
 app.config['SECRET_KEY'] = 'mysecretkey'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database/users.db'
+
+# starting the database and creating the model for the user
+db = SQLAlchemy(app)
+
+class Users(db.Model):
+  """
+  This is the model for the user
+  in the database.
+  """
+
+  # defining the columns for the database
+  id = db.Column(db.Integer, primary_key = True)
+  name = db.Column(db.String(100))
+  password = db.Column(db.String(600))
+  
 
 @app.route('/<string:name>')
 @app.route('/home/<string:name>')
@@ -31,14 +46,12 @@ def home(name):
   global visits
   visits += 1 # adding the visits
 
-  db = DataBase(DB_PATH) # connectiong
+  # db = DataBase(DB_PATH) # connectiong
 
-  # getting the users and names for validate
-  users_list = db.select('SELECT * FROM users')
-  names_list= [user[1] for user in users_list]
-  user = db.select(GET_FOR_NAME.format(name = name))[0]
-  db.close()
-
+  # # getting the users and names for validate
+  users_list = Users.query.all()
+  names_list = [user.name for user in users_list]
+  user = Users.query.filter_by(name = name).first()
 
   # validating if the name passed in the url is in the database
   if name in names_list:
@@ -69,17 +82,18 @@ def save_user():
   salt = gensalt()
   password_hashed = hashpw(password.encode(), salt) # getting the password in hash
 
-  db = DataBase(DB_PATH) # connecting
-
   # getting the users and names for validat
-  users_list = db.select('SELECT * FROM users')
-  names_list= [user[1] for user in users_list]
+  users_list = Users.query.all()
+  names_list = [user.name for user in users_list]
 
   # validating if the name is in the list of the database
   if name in names_list:
-    password_hashed = db.select(f'SELECT password FROM users WHERE(name = "{name}")')[0][0]
+    user = Users.query.filter_by(name = name).first()
 
-    if checkpw(password.encode(), password_hashed.encode()): # validating the password
+    # creating a password object
+    passwordObject = Password(user.password)
+
+    if checkpw(password.encode(), passwordObject.content.encode()): # validating the password
       return redirect(f'/home/{name}')
     else:
       flash(MESSAGES_ERRORS['password-incorrect'].format(name = name))
@@ -101,11 +115,12 @@ def save_user():
       return redirect(url_for('save_user'))
 
     else:
-      # in case not in the database
-      db.insert( INSERT_NEW_USER.format(name = user.name, password = user.password.content) )
-      db.close()
+      # in case not in the database, saving
+      user = Users(id = None, name = name, password = password_hashed)
+      db.session.add(user)
+      db.session.commit()
 
-      return redirect(f'/home/{user.name}') # rediricting with the route in the name of the user
+      return redirect(f'/home/{user.name}') # redirecting with the route in the name of the user
 
 @app.route('/about/<string:name>')
 def about(name):
@@ -114,10 +129,8 @@ def about(name):
   the about page.
   """
 
-  # selecting only the id and the name for send to about page
-  db = DataBase(DB_PATH)
-  user = db.select(GET_FOR_NAME.format(name = name))[0]
-  db.close()
+  # selecting only the name for send to about page
+  user = Users.query.filter_by(name = name).first()
 
   return render_template('about.html', user = user)
 
@@ -130,9 +143,7 @@ def my_acount(name):
   """
 
   # selecting the id and the name
-  db = DataBase(DB_PATH)
-  user = db.select(GET_FOR_NAME.format(name = name))[0]
-  db.close()
+  user = Users.query.filter_by(name = name).first()
 
   # user = User(user[0], user[1])
   return render_template('count.html', user = user)
@@ -144,9 +155,7 @@ def change_password_template(id):
   for change the password of the user.
   """
   
-  db = DataBase(DB_PATH)
-  user = db.select(f'SELECT id, name FROM users WHERE(id = {id})')[0]
-  db.close()
+  user = Users.query.filter_by(id = int(id)).first()
 
   # return render_template('change-password.html', user = user)
   return render_template('forms/change-password.html', user = user)
@@ -158,9 +167,7 @@ def validate_password_template(id):
   for validate the password.
   """
 
-  db = DataBase(DB_PATH)
-  user = db.select(GET_FOR_ID.format(id = id))[0]
-  db.close()
+  user = Users.query.filter_by(id = int(id)).first()
 
   return render_template('forms/validate-password.html', user = user)
 
@@ -173,16 +180,16 @@ def validate_password(id):
 
   password_to_validate = request.form['password-to-validate'].encode()
 
-  db = DataBase(DB_PATH)
-  user = db.select(f'SELECT id, name, password FROM users WHERE(id = {id})')[0]
-  db.close()
+  user = Users.query.filter_by(id = int(id)).first()
 
-  if checkpw(password_to_validate, user[2].encode()):
-    return redirect(f'/change-password/{user[0]}')
+  passwordObject = Password(user.password)
+
+  if checkpw(password_to_validate, passwordObject.content.encode()):
+    return redirect(f'/change-password/{user.id}')
 
   else:
-    flash(MESSAGES_ERRORS['password-incorrect'].format(name = user[1]))
-    return redirect(f'/validate-password/{user[0]}')
+    flash(MESSAGES_ERRORS['password-incorrect'].format(name = user.name))
+    return redirect(f'/validate-password/{user.id}')
 
 @app.route('/validate-password-for-name/<string:id>', methods= ['GET'])
 def validate_password_for_name_template(id):
@@ -192,9 +199,7 @@ def validate_password_for_name_template(id):
   is the name.
   """
 
-  db = DataBase(DB_PATH)
-  user = db.select(GET_FOR_ID.format(id = id))[0]
-  db.close()
+  user = Users.query.filter_by(id = int(id)).first()
 
   return render_template('forms/validate-password-for-name.html', user = user)
 
@@ -204,20 +209,19 @@ def validate_password_for_name(id):
   This route is for validate the password
   in case is the name to change.
   """
-  print('hello')
 
   password_to_validate = request.form['password-to-validate'].encode()
 
-  db = DataBase(DB_PATH)
-  user = db.select(f'SELECT id, name, password FROM users WHERE(id = {id})')[0]
-  db.close()
+  user = Users.query.filter_by(id = int(id)).first()
 
-  if checkpw(password_to_validate, user[2].encode()):
-    return redirect(f'/change-name/{user[0]}')
+  passwordObject = Password(user.password)
+
+  if checkpw(password_to_validate, passwordObject.content.encode()):
+    return redirect(f'/change-name/{user.id}')
 
   else:
-    flash(MESSAGES_ERRORS['password-incorrect'].format(name = user[1]))
-    return redirect(f'/validate-password-for-name/{user[0]}')
+    flash(MESSAGES_ERRORS['password-incorrect'].format(name = user.name))
+    return redirect(f'/validate-password-for-name/{user.id}')
 
 
 @app.route('/change-password/<string:id>', methods = ['POST'])
@@ -230,21 +234,24 @@ def change_password(id):
   the password of the user.
   """
 
-  db = DataBase(DB_PATH)
-  user = db.select(f'SELECT id FROM users WHERE(id = {id})')[0]
+  # getting the new password and the user to update the password
   new_password = request.form['new-password']
+  user = Users.query.filter_by(id = int(id)).first()
 
+  # hashing
   salt = gensalt()
   new_password = hashpw(new_password.encode(), salt)
   new_password = Password(new_password)
 
-  db.update(f'UPDATE users SET password = "{new_password.content}" WHERE(id = {user[0]})')
-  user = db.select(f'SELECT name FROM users WHERE(id = {id})')[0]
-  db.close()
+  db.session.execute(
+    # updating the password
+    update(Users).where(Users.id == user.id).values(password = new_password.content)
+  )
+  db.session.commit()
 
   flash('Password Updated')
 
-  return redirect(f'/home/{user[0]}')
+  return redirect(f'/home/{user.name}')
 
 
 @app.route('/change-name/<string:id>', methods = ['GET'])
@@ -254,9 +261,8 @@ def change_name_template(id):
   for change the name.
   """
 
-  db = DataBase(DB_PATH)
-  user = db.select(GET_FOR_ID.format(id = id))[0]
-  db.close()
+  # the user for send to change-name page
+  user = Users.query.filter_by(id = int(id)).first()
 
   return render_template('forms/change-name.html',  user = user)
 
@@ -269,24 +275,19 @@ def change_name(id):
   The route recived the id, for change the name.
   """
 
-  db = DataBase(DB_PATH)
-  user = db.select(f'SELECT id FROM users WHERE(id = {id})')[0]
+  # getting the new name for the user
   new_name = request.form['new-name']
+  user = Users.query.filter_by(id = int(id)).first()
 
-  print(user[0])
-  print(f'UPDATE users SET name = "{new_name}" WHERE(id = {int(user[0])})')
-  db.update(f'UPDATE users SET name = "{new_name}" WHERE(id = {int(user[0])})')
-
-  print(id)
-  print(type(id))
-
-  user = db.select(f'SELECT name FROM users WHERE(id = {id})')[0]
-
-  db.close()
+  db.session.execute(
+    # updating
+    update(Users).where(Users.id == user.id).values(name = new_name)
+  )
+  db.session.commit()
 
   flash('Name Updated Sucessfully')
 
-  return redirect(f'/home/{user[0]}')
+  return redirect(f'/home/{user.name}')
 
 
 if __name__== '__main__':

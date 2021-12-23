@@ -4,6 +4,16 @@
 
 {% block content %}
 
+<!-- VALIDDATING FOR SHOW MESSAGES -->
+{% with messages = get_flashed_messages()[0] %}
+{% if messages %}
+<div class="messages-view">
+  <p class="message">{{ messages }}</p>
+  <script src="{{ url_for('static', filename = 'js/deleteMessage.js') }}"></script>
+</div>
+{% endif %}
+{% endwith %}
+
 <div class="container">
   <!-- VIEW OF IMAGES -->
   <div class="images-view">

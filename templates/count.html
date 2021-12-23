@@ -1,6 +1,14 @@
 {% extends 'layout.html' %}
 
+<!-- THIS IS THE PAGE FOR GET INFORMATON OF OUR USER -->
+
 {% block content %}
+
+<!-- CUSTOM STYLE -->
+<link rel="stylesheet" href="{{ url_for('static', filename = 'css/login.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename = 'css/forms.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename = 'css/count.css') }}">
+
 <div class="container">
   <h1>My Count</h1>
   <span>Name: {{ user[1] }}</span>

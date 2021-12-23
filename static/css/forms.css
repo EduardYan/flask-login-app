@@ -1,0 +1,70 @@
+/*
+  These are the styles
+  for the formularies of data.
+*/
+
+
+/* FORMULARY */
+.container form {
+  transition: background-color .3s ease;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  padding: 0 30%;
+}
+
+.container form h1 {
+  transition: color .3s ease;
+  font-size: 2rem;
+  color: #aaa;
+}
+
+.container form h1:hover {
+  cursor: pointer;
+  color: #888;
+}
+
+.container form p {
+  transition: color .3s ease;
+  color: #aaa;
+  font-size: 1.5rem;
+}
+
+.container form p:hover {
+  cursor: pointer;
+  color: #888;
+}
+
+.container form label {
+  transition: color .3s ease;
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  color: #aaa;
+  display: block;
+}
+
+.container form label:hover {
+  cursor: pointer;
+  color: #777;
+}
+
+.container form input {
+  padding: 0.5rem;
+  display: block;
+  margin-bottom: 2.3rem;
+}
+
+.container form button {
+  width: 50%;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 1.3rem;
+  background-color: #444444;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  transition: background-color .3s ease;
+  color: #aaa;
+}
+
+.container form button:hover {
+  cursor: pointer;
+  background-color: #333333;
+  box-shadow: 0.5rem 0.5rem rgba(0, 0, 0, 0.3);
+}

@@ -1,0 +1,56 @@
+/*
+  These are the styles
+  for the count.
+*/
+
+/* Count Style */
+.container {
+  border: 2.5px black solid;
+  padding: 1.5rem;
+  border-radius: 3rem;
+  transition: background-color .3s ease;
+}
+
+.container:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.container h1 {
+  color: #ffffff;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  transition: color .3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.container span {
+  transition: color .3s ease;
+  font-size: 1.5rem;
+  color: #aaa;
+  display: block;
+  margin: 2rem 0;
+}
+
+.container h1:hover {
+  cursor: pointer;
+  color: #888;
+}
+
+.container span:hover {
+  color: #888;
+}
+
+.container a {
+  text-decoration: none;
+  color: #ffffff;
+  display: block;
+  margin: 1rem 0;
+  border: 2px black solid;
+  border-radius: 1rem;
+  padding: 1rem;
+  width: 40%;
+  font-size: 1.5rem;
+}
+
+.container a:hover {
+  background-color: #333;
+}

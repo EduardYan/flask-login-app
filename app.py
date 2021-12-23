@@ -7,8 +7,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from models.user import User
 from models.password import Password
 from models.database import DataBase, DB_PATH
-from bcrypt import checkpw, gensalt, hashpw
 from data.messages import MESSAGES_ERRORS
+from bcrypt import checkpw, gensalt, hashpw
 
 # variable for the visits
 visits = 0
@@ -35,14 +35,17 @@ def home(name):
   # getting the users and names for validat
   users_list = db.select('SELECT * FROM users')
   names_list= [user[1] for user in users_list]
+  user = db.select(f'SELECT id, name FROM users WHERE(name = "{name}")')[0]
+  db.close()
 
 
   # validating if the name passed in the url is in the database
   if name in names_list:
-    return render_template('index.html', username = name)
+    print(user)
+    return render_template('index.html', user = user)
 
   else:
-    return render_template('not-log.html')
+    return render_template('errors/not-log.html')
 
 @app.route('/login', methods = ['GET'])
 def login():
@@ -92,6 +95,7 @@ def save_user():
 
       return redirect(url_for('save_user'))
 
+    # in case the password is short
     elif not len(password) > 5:
       flash(MESSAGES_ERRORS['less-characters'])
       return redirect(url_for('save_user'))
@@ -103,16 +107,21 @@ def save_user():
 
       return redirect(f'/home/{user.name}') # rediricting with the route in the name of the user
 
-@app.route('/about')
-def about():
+@app.route('/about/<string:name>')
+def about(name):
   """
   This route is for render
   the about page.
   """
-  return render_template('about.html')
+
+  db = DataBase(DB_PATH)
+  user = db.select(f'SELECT id, name FROM users WHERE(name = "{name}")')[0]
+  db.close()
+
+  return render_template('about.html', user = user)
 
 
-@app.route('/mycount/<string:name>')
+@app.route('/mycount/<string:name>', methods = ['GET'])
 def my_acount(name):
   """
   This route is for show the count
@@ -134,11 +143,11 @@ def change_password_template(id):
   """
   
   db = DataBase(DB_PATH)
-  user = db.select(f'SELECT id FROM users WHERE(id = {id})')[0]
+  user = db.select(f'SELECT id, name FROM users WHERE(id = {id})')[0]
   db.close()
 
   # return render_template('change-password.html', user = user)
-  return render_template('change-password.html', user = user)
+  return render_template('forms/change-password.html', user = user)
 
 @app.route('/validate-password/<string:id>', methods= ['GET'])
 def validate_password_template(id):
@@ -148,10 +157,10 @@ def validate_password_template(id):
   """
 
   db = DataBase(DB_PATH)
-  user = db.select(f'SELECT id FROM users WHERE(id = {id})')[0]
+  user = db.select(f'SELECT id, name FROM users WHERE(id = {id})')[0]
   db.close()
 
-  return render_template('validate-password.html', user = user)
+  return render_template('forms/validate-password.html', user = user)
 
 @app.route('/validate-password/<string:id>', methods = ['POST'])
 def validate_password(id):
@@ -182,10 +191,10 @@ def validate_password_for_name_template(id):
   """
 
   db = DataBase(DB_PATH)
-  user = db.select(f'SELECT id FROM users WHERE(id = {id})')[0]
+  user = db.select(f'SELECT id, name FROM users WHERE(id = {id})')[0]
   db.close()
 
-  return render_template('validate-password-for-name.html', user = user)
+  return render_template('forms/validate-password-for-name.html', user = user)
 
 @app.route('/validate-password-for-name/<string:id>', methods = ['POST'])
 def validate_password_for_name(id):
@@ -226,13 +235,10 @@ def change_password(id):
 
   salt = gensalt()
   new_password = hashpw(new_password.encode(), salt)
-
   new_password = Password(new_password)
 
   db.update(f'UPDATE users SET password = "{new_password.content}" WHERE(id = {user[0]})')
-
   user = db.select(f'SELECT name FROM users WHERE(id = {id})')[0]
-
   db.close()
 
   flash('Password Updated')
@@ -251,7 +257,7 @@ def change_name_template(id):
   user = db.select(f'SELECT id, name FROM users WHERE(id = {id})')[0]
   db.close()
 
-  return render_template('change-name.html',  user = user)
+  return render_template('forms/change-name.html',  user = user)
 
 @app.route('/change-name/<string:id>', methods = ['POST'])
 def change_name(id):
@@ -280,8 +286,6 @@ def change_name(id):
   flash('Name Updated Sucessfully')
 
   return redirect(f'/home/{user[0]}')
-
-
 
 
 if __name__== '__main__':

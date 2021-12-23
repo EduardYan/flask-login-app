@@ -4,7 +4,7 @@
 
     <ul class="nav-left">
       <li>
-        <a href="/home/{{ username }}">Watch Images App</a>
+        <a href="/home/{{ user[1] }}">Watch Images App</a>
       </li>
     </ul>
 
@@ -14,10 +14,10 @@
 
       </li>
       <li>
-        <a href="{{ url_for('about') }}">About</a>
+        <a href="/about/{{ user[1] }}">About</a>
       </li>
       <li>
-        <a href="/mycount/{{ username }}">My count</a>
+        <a href="/mycount/{{ user[1] }}">My count</a>
       </li>
     </ul>
 

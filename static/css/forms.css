@@ -69,6 +69,17 @@
   box-shadow: 0.5rem 0.5rem rgba(0, 0, 0, 0.3);
 }
 
+@media (max-width: 700px) {
+  .container form {
+    padding: 0 20%;
+  }
+
+  .container form button {
+    width: 100%;
+  }
+
+}
+
 @media (max-width: 500px) {
   .container form {
     padding: 0 10%;

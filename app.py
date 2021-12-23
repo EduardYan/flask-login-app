@@ -174,7 +174,7 @@ def validate_password(id):
   password_to_validate = request.form['password-to-validate'].encode()
 
   db = DataBase(DB_PATH)
-  user = db.select(GET_FOR_ID.format(id = id))[0]
+  user = db.select(f'SELECT id, name, password FROM users WHERE(id = {id})')[0]
   db.close()
 
   if checkpw(password_to_validate, user[2].encode()):

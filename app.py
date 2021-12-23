@@ -8,6 +8,7 @@ from models.user import User
 from models.password import Password
 from models.database import DataBase, DB_PATH
 from data.messages import MESSAGES_ERRORS
+from data.queries import GET_FOR_ID, GET_FOR_NAME, INSERT_NEW_USER
 from bcrypt import checkpw, gensalt, hashpw
 
 # variable for the visits
@@ -32,10 +33,10 @@ def home(name):
 
   db = DataBase(DB_PATH) # connectiong
 
-  # getting the users and names for validat
+  # getting the users and names for validate
   users_list = db.select('SELECT * FROM users')
   names_list= [user[1] for user in users_list]
-  user = db.select(f'SELECT id, name FROM users WHERE(name = "{name}")')[0]
+  user = db.select(GET_FOR_NAME.format(name = name))[0]
   db.close()
 
 
@@ -102,7 +103,7 @@ def save_user():
 
     else:
       # in case not in the database
-      db.insert( f'INSERT INTO users VALUES(NULL, "{user.name}", "{user.password.content}")' )
+      db.insert( INSERT_NEW_USER.format(name = user.name, password = user.password.content) )
       db.close()
 
       return redirect(f'/home/{user.name}') # rediricting with the route in the name of the user
@@ -114,8 +115,9 @@ def about(name):
   the about page.
   """
 
+  # selecting only the id and the name for send to about page
   db = DataBase(DB_PATH)
-  user = db.select(f'SELECT id, name FROM users WHERE(name = "{name}")')[0]
+  user = db.select(GET_FOR_NAME.format(name = name))[0]
   db.close()
 
   return render_template('about.html', user = user)
@@ -128,8 +130,9 @@ def my_acount(name):
   of the user.
   """
 
+  # selecting the id and the name
   db = DataBase(DB_PATH)
-  user = db.select(f'SELECT id, name FROM users WHERE(name = "{name}")')[0]
+  user = db.select(GET_FOR_NAME.format(name = name))[0]
   db.close()
 
   # user = User(user[0], user[1])
@@ -157,7 +160,7 @@ def validate_password_template(id):
   """
 
   db = DataBase(DB_PATH)
-  user = db.select(f'SELECT id, name FROM users WHERE(id = {id})')[0]
+  user = db.select(GET_FOR_ID.format(id = id))[0]
   db.close()
 
   return render_template('forms/validate-password.html', user = user)
@@ -172,7 +175,7 @@ def validate_password(id):
   password_to_validate = request.form['password-to-validate'].encode()
 
   db = DataBase(DB_PATH)
-  user = db.select(f'SELECT id, name, password FROM users WHERE(id = {id})')[0]
+  user = db.select(GET_FOR_ID.format(id = id))[0]
   db.close()
 
   if checkpw(password_to_validate, user[2].encode()):
@@ -191,7 +194,7 @@ def validate_password_for_name_template(id):
   """
 
   db = DataBase(DB_PATH)
-  user = db.select(f'SELECT id, name FROM users WHERE(id = {id})')[0]
+  user = db.select(GET_FOR_ID.format(id = id))[0]
   db.close()
 
   return render_template('forms/validate-password-for-name.html', user = user)
@@ -211,7 +214,6 @@ def validate_password_for_name(id):
   db.close()
 
   if checkpw(password_to_validate, user[2].encode()):
-    print('hellow')
     return redirect(f'/change-name/{user[0]}')
 
   else:
@@ -254,7 +256,7 @@ def change_name_template(id):
   """
 
   db = DataBase(DB_PATH)
-  user = db.select(f'SELECT id, name FROM users WHERE(id = {id})')[0]
+  user = db.select(GET_FOR_ID.format(id = id))[0]
   db.close()
 
   return render_template('forms/change-name.html',  user = user)

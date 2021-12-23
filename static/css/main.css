@@ -222,6 +222,12 @@ footer a:hover {
 }
 
 @media (max-width: 500px) {
+  /* Navigation */
+  header .nav-main .nav-rigth li {
+    padding: 0.5rem 1.5rem;
+    margin: 0;
+  }
+
   .container .images-view {
     row-gap: 1rem;
   }

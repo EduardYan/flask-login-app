@@ -204,7 +204,6 @@ def validate_password_for_name(id):
   This route is for validate the password
   in case is the name to change.
   """
-  print('hello')
 
   password_to_validate = request.form['password-to-validate'].encode()
 
@@ -273,12 +272,7 @@ def change_name(id):
   user = db.select(f'SELECT id FROM users WHERE(id = {id})')[0]
   new_name = request.form['new-name']
 
-  print(user[0])
-  print(f'UPDATE users SET name = "{new_name}" WHERE(id = {int(user[0])})')
   db.update(f'UPDATE users SET name = "{new_name}" WHERE(id = {int(user[0])})')
-
-  print(id)
-  print(type(id))
 
   user = db.select(f'SELECT name FROM users WHERE(id = {id})')[0]
 
@@ -291,4 +285,4 @@ def change_name(id):
 
 if __name__== '__main__':
   # running the server
-  app.run(host = '0.0.0.0', port = 6000, debug = True)
+  app.run(host = '0.0.0.0', port = 4000, debug = True)

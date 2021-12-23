@@ -12,7 +12,7 @@ class Password:
   def __init__(self, content:bytes) -> None:
     # validating the type of data
     if type(content) not in [bytes]:
-      raise TypeError('The parameter password, must be a string.')
+      raise TypeError('The parameter password, must be bytes.')
 
     self.content = content.decode()
     self.len = len(content)

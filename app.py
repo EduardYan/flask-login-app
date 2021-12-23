@@ -91,12 +91,14 @@ def save_user():
     user = Users.query.filter_by(name = name).first()
 
     # creating a password object
-    passwordObject = Password(user.password)
+    passwordObject = Password(password_hashed)
 
-    if checkpw(password.encode(), passwordObject.content.encode()): # validating the password
+    if checkpw(passwordObject.content.encode(), user.password): # validating the password
+      print('good')
       return redirect(f'/home/{name}')
     else:
-      flash(MESSAGES_ERRORS['password-incorrect'].format(name = name))
+      print('bad')
+      flash(MESSAGES_ERRORS['password-incorrect'].format(name = user.name))
       return redirect(url_for('save_user'))
 
   else:
@@ -182,7 +184,7 @@ def validate_password(id):
 
   user = Users.query.filter_by(id = int(id)).first()
 
-  passwordObject = Password(user.password)
+  passwordObject = Password(user.password.encode())
 
   if checkpw(password_to_validate, passwordObject.content.encode()):
     return redirect(f'/change-password/{user.id}')
@@ -214,7 +216,9 @@ def validate_password_for_name(id):
 
   user = Users.query.filter_by(id = int(id)).first()
 
-  passwordObject = Password(user.password)
+  print(user.password)
+  print(type(user.password))
+  passwordObject = Password(user.password.encode())
 
   if checkpw(password_to_validate, passwordObject.content.encode()):
     return redirect(f'/change-name/{user.id}')

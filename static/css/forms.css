@@ -68,3 +68,17 @@
   background-color: #333333;
   box-shadow: 0.5rem 0.5rem rgba(0, 0, 0, 0.3);
 }
+
+@media (max-width: 500px) {
+  .container form {
+    padding: 0 10%;
+  }
+
+  .container form button {
+    width: 100%;
+  }
+
+  .container form label {
+    margin-bottom: 10px;
+  }
+}

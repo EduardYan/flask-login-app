@@ -55,3 +55,24 @@
 .container a:hover {
   background-color: #333;
 }
+
+/* Small */
+@media (max-width: 700px) {
+  /* Container */
+  .container a {
+    width: 50%;
+  }
+
+}
+
+/* More Small */
+@media (max-width: 500px) {
+  .container {
+    padding: 5rem;
+  }
+
+  .container a {
+    width: 100%;
+  }
+
+}

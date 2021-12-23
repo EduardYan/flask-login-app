@@ -120,16 +120,28 @@ header .nav-main .nav-left li a:hover {
 }
 
 .container .images-view img:hover {
-  box-shadow: 0.8rem 0.8rem rgba(0, 0, 0, 0.6);
+  box-shadow: 0.8rem 0.8rem rgba(0, 0, 0, 0.7);
   cursor: pointer;
   
 }
 
+.container .images-view p {
+  transition: color .3s ease;
+  color: #aaa;
+  font-size: 1.5rem;
+  padding: 0;
+  text-align: justify;
+}
+
+.container .images-view p:hover {
+  color: #999;
+}
+
 /* The image view for show */
-.images-view {
+.container .images-view {
   display: grid;
-  grid-template-columns: 30% 30% 30%;
-  column-gap: 1rem;
+  grid-template-columns: 50% 50%;
+  column-gap: 2.5rem;
   row-gap: 3rem;
 }
 
@@ -137,20 +149,89 @@ header .nav-main .nav-left li a:hover {
 footer {
   background-color: #444;
   padding: 0.8rem;
-  text-align: right;
   color: #ffffff;
   margin-top: 8.5rem;
   opacity: .9;
+  display: flex;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 footer p {
   transition: color 0.3s ease;
   font-size: 1.5rem;
-  text-align: right;
   margin: 0 2rem;
 }
 
 footer p:hover {
   cursor: pointer;
   color: #bbb;
+}
+
+footer a {
+  text-decoration: none;
+  font-size: 1.3rem;
+  margin: 0;
+  margin-left: 70%;
+  color: #ffffff;
+}
+
+footer a:hover {
+  color: #bbb;
+}
+
+@media (max-width: 700px) {
+
+  /* Navigation */
+  header .nav-main {
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 50% 50%;
+    row-gap: 0;
+    padding: 0.5rem;
+  }
+
+  header .nav-main .nav-left a {
+    margin: 0;
+    padding: 0;
+  }
+
+  header .nav-main .nav-rigth li {
+    margin: 0 2rem;
+    padding: 0;
+  }
+
+  header .nav-main .nav-rigth li a {
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Images */
+  .container .images-view {
+    grid-template-columns: 1fr;
+  }
+
+  /* Footer */
+  footer a {
+    margin-left: 50%;
+  }
+
+}
+
+@media (max-width: 500px) {
+  body {
+    background: red;
+  }
+
+  .container .images-view {
+    row-gap: 1rem;
+  }
+
+  .container .images-view p {
+    text-align: center;
+  }
+
+  footer a {
+    margin-left: 20%;
+  }
+  
 }

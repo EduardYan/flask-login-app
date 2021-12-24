@@ -236,8 +236,6 @@ def change_password(id):
   new_password = request.form['new-password']
   user = Users.query.filter_by(id = int(id)).first()
 
-  print(new_password)
-
   # validating the new password
   if new_password == '':
     flash(MESSAGES_ERRORS['password-empty'])

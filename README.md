@@ -1,6 +1,6 @@
-# Flask Login Images.
+# Flask Login Images (ORM).
 
-__This is a web application for login a user for wacth some images. Using the database sqlite and python3 and SQLAlchemy.__
+__This is a alternative version using SQLAlchemy module for the database.__
 
 ## Dependencies.
 __This proyect depend of flask and SQLAlchemy python module. Install using the requirements file in this proyect.__

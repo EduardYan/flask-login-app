@@ -46,15 +46,14 @@ def home(name):
   global visits
   visits += 1 # adding the visits
 
-  # db = DataBase(DB_PATH) # connectiong
 
-  # # getting the users and names for validate
+  # getting the users and names for validate
   users_list = Users.query.all()
   names_list = [user.name for user in users_list]
   user = Users.query.filter_by(name = name).first()
 
   # validating if the name passed in the url is in the database
-  if user.name in names_list:
+  if name in names_list:
     return render_template('index.html', user = user)
 
   else:
@@ -79,35 +78,31 @@ def save_user():
   # gettings the info of the user for save in the database
   name = request.form['name-user']
   password = request.form['password-user']
-  salt = gensalt()
-  password_hashed = hashpw(password.encode(), salt) # getting the password in hash
 
   # getting the users and names for validat
   users_list = Users.query.all()
   names_list = [user.name for user in users_list]
 
-
   # validating if the name is in the list of the database
   if name in names_list:
     user = Users.query.filter_by(name = name).first()
-    print(user.id)
-    print(user.name)
-    print(user.password)
 
     # creating a password object
     passwordObject = Password(user.password.encode())
 
-    if checkpw(password_hashed, passwordObject.content.encode()): # validating the password
-      print('good')
+    if checkpw(password.encode(), passwordObject.content.encode()): # validating the password
       return redirect(f'/home/{user.name}')
     else:
-      print('bad')
       flash(MESSAGES_ERRORS['password-incorrect'].format(name = user.name))
       return redirect(url_for('login'))
 
   else:
+    # generating a hash for save
+    salt = gensalt()
+    password_hashed = hashpw(password.encode(), salt) # getting the password in hash
+
     # creating a user
-    user = User(name, password_hashed)
+    userObject = User(name, password_hashed)
 
     # validating the password
     if password == '':
@@ -122,7 +117,7 @@ def save_user():
 
     else:
       # in case not in the database, saving
-      user = Users(id = None, name = name, password = password_hashed)
+      user = Users(id = None, name = userObject.name, password = userObject.password.content)
       db.session.add(user)
       db.session.commit()
 
@@ -183,11 +178,10 @@ def validate_password(id):
   of the user for change, and render the page for change it.
   """
 
+  # getting for validate the password
   password_to_validate = request.form['password-to-validate'].encode()
-
   user = Users.query.filter_by(id = int(id)).first()
-
-  passwordObject = Password(user.password)
+  passwordObject = Password(user.password.encode())
 
   if checkpw(password_to_validate, passwordObject.content.encode()):
     return redirect(f'/change-password/{user.id}')
@@ -215,11 +209,10 @@ def validate_password_for_name(id):
   in case is the name to change.
   """
 
+  # getting the new password for validate
   password_to_validate = request.form['password-to-validate'].encode()
-
   user = Users.query.filter_by(id = int(id)).first()
-
-  passwordObject = Password(user.password)
+  passwordObject = Password(user.password.encode())
 
   if checkpw(password_to_validate, passwordObject.content.encode()):
     return redirect(f'/change-name/{user.id}')
@@ -243,20 +236,34 @@ def change_password(id):
   new_password = request.form['new-password']
   user = Users.query.filter_by(id = int(id)).first()
 
-  # hashing
-  salt = gensalt()
-  new_password = hashpw(new_password.encode(), salt)
-  new_password = Password(new_password)
+  print(new_password)
 
-  db.session.execute(
-    # updating the password
-    update(Users).where(Users.id == user.id).values(password = new_password.content)
-  )
-  db.session.commit()
+  # validating the new password
+  if new_password == '':
+    flash(MESSAGES_ERRORS['password-empty'])
 
-  flash('Password Updated')
+    return redirect(f'/change-password/{user.id}')
 
-  return redirect(f'/home/{user.name}')
+  elif not len(new_password) > 5:
+    # in case less to five
+    flash(MESSAGES_ERRORS['less-characters'])
+    return redirect(f'/change-password/{user.id}')
+
+  else:
+    # hashing
+    salt = gensalt()
+    new_password = hashpw(new_password.encode(), salt)
+    new_password = Password(new_password)
+
+    db.session.execute(
+      # updating the password
+      update(Users).where(Users.id == user.id).values(password = new_password.content)
+    )
+    db.session.commit()
+
+    flash('Password Updated')
+
+    return redirect(f'/home/{user.name}')
 
 
 @app.route('/change-name/<string:id>', methods = ['GET'])
@@ -297,4 +304,4 @@ def change_name(id):
 
 if __name__== '__main__':
   # running the server
-  app.run(host = '0.0.0.0', port = 4000, debug = True)
+  app.run(host = '0.0.0.0', port = 3000, debug = True)

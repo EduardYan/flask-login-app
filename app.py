@@ -152,18 +152,6 @@ def my_acount(name):
 
   return render_template('count.html', user = user)
 
-@app.route('/change-password/<string:id>', methods = ['GET'])
-def change_password_template(id):
-  """
-  This is the route for render the template
-  for change the password of the user.
-  """
-  
-  user = Users.query.filter_by(id = int(id)).first()
-
-  # return render_template('change-password.html', user = user)
-  return render_template('forms/change-password.html', user = user)
-
 @app.route('/validate-password/<string:id>', methods= ['GET'])
 def validate_password_template(id):
   """
@@ -225,6 +213,17 @@ def validate_password_for_name(id):
     flash(MESSAGES_ERRORS['password-incorrect'].format(name = user.name))
     return redirect(f'/validate-password-for-name/{user.id}')
 
+@app.route('/change-password/<string:id>', methods = ['GET'])
+def change_password_template(id):
+  """
+  This is the route for render the template
+  for change the password of the user.
+  """
+  
+  user = Users.query.filter_by(id = int(id)).first()
+
+  # return render_template('change-password.html', user = user)
+  return render_template('forms/change-password.html', user = user)
 
 @app.route('/change-password/<string:id>', methods = ['POST'])
 def change_password(id):
@@ -237,36 +236,44 @@ def change_password(id):
   """
 
   # getting the new password and the user to update the password
-  new_password = request.form['new-password']
+  first_password = request.form['first-password']
+  second_password = request.form['second-password']
   user = Users.query.filter_by(id = int(id)).first()
 
-  # validating the new password
-  if new_password == '':
-    flash(MESSAGES_ERRORS['password-empty'])
+  # validating if the password matched
+  if str(first_password) == str(second_password):
+    # validating the new password
+    if first_password == '':
+      flash(MESSAGES_ERRORS['password-empty'])
 
-    return redirect(f'/change-password/{user.id}')
+      return redirect(f'/change-password/{user.id}')
 
-  elif not len(new_password) > 5:
-    # in case less to five
-    flash(MESSAGES_ERRORS['less-characters'])
-    return redirect(f'/change-password/{user.id}')
+    elif not len(first_password) > 5:
+      # in case less to five
+      flash(MESSAGES_ERRORS['less-characters'])
+      return redirect(f'/change-password/{user.id}')
+
+    else:
+      # hashing
+      salt = gensalt()
+      new_password = hashpw(first_password.encode(), salt)
+      new_password = Password(new_password)
+
+      db.session.execute(
+        # updating the password
+        update(Users).where(Users.id == user.id).values(password = new_password.content)
+      )
+      db.session.commit()
+
+      flash('Password Updated')
+      del first_password # deleting for security
+      del second_password
+
+      return redirect(f'/home/{user.name}')
 
   else:
-    # hashing
-    salt = gensalt()
-    new_password = hashpw(new_password.encode(), salt)
-    new_password = Password(new_password)
-
-    db.session.execute(
-      # updating the password
-      update(Users).where(Users.id == user.id).values(password = new_password.content)
-    )
-    db.session.commit()
-
-    flash('Password Updated')
-
-    return redirect(f'/home/{user.name}')
-
+    flash(MESSAGES_ERRORS['password-no-matched'])
+    return redirect(f'/change-password/{user.id}')
 
 @app.route('/change-name/<string:id>', methods = ['GET'])
 def change_name_template(id):

@@ -231,30 +231,36 @@ def change_password(id):
   # getting the data of the user in the db
   db = DataBase(DB_PATH)
   user = db.select(f'SELECT id FROM users WHERE(id = {id})')[0]
-  new_password = request.form['new-password']
+  first_password = request.form['first-password']
+  second_password = request.form['second-password']
 
-  # validating the password
-  if new_password == '': # in case is empty
-      flash(MESSAGES_ERRORS['password-empty'])
-      return redirect(f'/change-password/{user[0]}')
+  # validating if the passwords matched
+  if str(first_password) == str(second_password):
+    # validating the password
+    if first_password == '': # in case is empty
+        flash(MESSAGES_ERRORS['password-empty'])
+        return redirect(f'/change-password/{user[0]}')
 
-  elif not len(new_password) > 5:
-      flash(MESSAGES_ERRORS['less-characters'])
-      return redirect(f'/change-password/{user[0]}')
-  
+    elif not len(first_password) > 5:
+        flash(MESSAGES_ERRORS['less-characters'])
+        return redirect(f'/change-password/{user[0]}')
+    
+    else:
+        salt = gensalt()
+        new_password = hashpw(first_password.encode(), salt)
+        new_password = Password(new_password)
+
+        db.update(f'UPDATE users SET password = "{new_password.content}" WHERE(id = {user[0]})')
+        user = db.select(f'SELECT name FROM users WHERE(id = {id})')[0]
+        db.close()
+
+        flash('Password Updated')
+
+        return redirect(f'/home/{user[0]}')
+
   else:
-      salt = gensalt()
-      new_password = hashpw(new_password.encode(), salt)
-      new_password = Password(new_password)
-
-      db.update(f'UPDATE users SET password = "{new_password.content}" WHERE(id = {user[0]})')
-      user = db.select(f'SELECT name FROM users WHERE(id = {id})')[0]
-      db.close()
-
-      flash('Password Updated')
-
-      return redirect(f'/home/{user[0]}')
-
+    flash(MESSAGES_ERRORS['passwords-no-matched'])
+    return redirect(f'/change-password/{user[0]}')
 
 @app.route('/change-name/<string:id>', methods = ['GET'])
 def change_name_template(id):

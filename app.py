@@ -136,21 +136,6 @@ def my_acount(name):
 
   # user = User(user[0], user[1])
   return render_template('count.html', user = user)
-
-@app.route('/change-password/<string:id>', methods = ['GET'])
-def change_password_template(id):
-  """
-  This is the route for render the template
-  for change the password of the user.
-  """
-  
-  db = DataBase(DB_PATH)
-  user = db.select(f'SELECT id, name FROM users WHERE(id = {id})')[0]
-  db.close()
-
-  # return render_template('change-password.html', user = user)
-  return render_template('forms/change-password.html', user = user)
-
 @app.route('/validate-password/<string:id>', methods= ['GET'])
 def validate_password_template(id):
   """
@@ -218,6 +203,20 @@ def validate_password_for_name(id):
     flash(MESSAGES_ERRORS['password-incorrect'].format(name = user[1]))
     return redirect(f'/validate-password-for-name/{user[0]}')
 
+@app.route('/change-password/<string:id>', methods = ['GET'])
+def change_password_template(id):
+  """
+  This is the route for render the template
+  for change the password of the user.
+  """
+  
+  db = DataBase(DB_PATH)
+  user = db.select(f'SELECT id, name FROM users WHERE(id = {id})')[0]
+  db.close()
+
+  # return render_template('change-password.html', user = user)
+  return render_template('forms/change-password.html', user = user)
+
 
 @app.route('/change-password/<string:id>', methods = ['POST'])
 def change_password(id):
@@ -229,21 +228,32 @@ def change_password(id):
   the password of the user.
   """
 
+  # getting the data of the user in the db
   db = DataBase(DB_PATH)
   user = db.select(f'SELECT id FROM users WHERE(id = {id})')[0]
   new_password = request.form['new-password']
 
-  salt = gensalt()
-  new_password = hashpw(new_password.encode(), salt)
-  new_password = Password(new_password)
+  # validating the password
+  if new_password == '': # in case is empty
+      flash(MESSAGES_ERRORS['password-empty'])
+      return redirect(f'/change-password/{user[0]}')
 
-  db.update(f'UPDATE users SET password = "{new_password.content}" WHERE(id = {user[0]})')
-  user = db.select(f'SELECT name FROM users WHERE(id = {id})')[0]
-  db.close()
+  elif not len(new_password) > 5:
+      flash(MESSAGES_ERRORS['less-characters'])
+      return redirect(f'/change-password/{user[0]}')
+  
+  else:
+      salt = gensalt()
+      new_password = hashpw(new_password.encode(), salt)
+      new_password = Password(new_password)
 
-  flash('Password Updated')
+      db.update(f'UPDATE users SET password = "{new_password.content}" WHERE(id = {user[0]})')
+      user = db.select(f'SELECT name FROM users WHERE(id = {id})')[0]
+      db.close()
 
-  return redirect(f'/home/{user[0]}')
+      flash('Password Updated')
+
+      return redirect(f'/home/{user[0]}')
 
 
 @app.route('/change-name/<string:id>', methods = ['GET'])

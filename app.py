@@ -266,13 +266,13 @@ def change_password(id):
       db.session.commit()
 
       flash('Password Updated')
-      del first_password # deleting for security
-      del second_password
+      del(first_password, second_password)
 
       return redirect(f'/home/{user.name}')
 
   else:
     flash(MESSAGES_ERRORS['password-no-matched'])
+    del(first_password, second_password)
     return redirect(f'/change-password/{user.id}')
 
 @app.route('/change-name/<string:id>', methods = ['GET'])

@@ -1,6 +1,10 @@
 """
 This is the principal file for execute
 the server.
+
+This version is maked, with ORM for the database
+using SQLAlchemy for the work.
+
 """
 
 from flask import Flask, render_template, request, redirect, url_for, flash

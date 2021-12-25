@@ -25,6 +25,10 @@ __Or:__
 $ python3 -m app
 ```
 
+## Screenshots.
+![screenshot-login](./doc/screenshot-login.png)
+![screenshot](./doc/screenshot.png)
+
 ## Notes.
 
 __This version is verbose for the queries for the database.__

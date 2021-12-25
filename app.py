@@ -303,4 +303,4 @@ def change_name(id):
 
 if __name__== '__main__':
   # running the server
-  app.run(host = '0.0.0.0', port = 4000, debug = True)
+  app.run(port = 4000, debug = True)

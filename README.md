@@ -19,6 +19,8 @@ __For run execute:__
 ```bash
 $ python3 app.py
 ```
+__And visit the browser: http://localhost:4000/login__
+
 __Or:__
 
 ```bash

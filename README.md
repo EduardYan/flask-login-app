@@ -3,7 +3,8 @@
 __This is a alternative version using SQLAlchemy module for the database.__
 
 ## Dependencies.
-__This proyect depend of flask, SQLAlchemy and bcrypt python module. Install using the requirements file in this proyect.__
+
+__This proyect depend of flask, SQLAlchemy and bcrypt python modules. Install using the requirements file in this proyect.__
 
 ```bash
 $ pip3 install -r requirements.txt
@@ -17,10 +18,12 @@ __For run execute:__
 $ python3 app.py
 ```
 
+__And visite in the browser http://localhost:3000/login__
+
 __Or:__
 
 ```bash
-$ python3 -m app.py
+$ python3 -m app
 ```
 
 ## Notes.
